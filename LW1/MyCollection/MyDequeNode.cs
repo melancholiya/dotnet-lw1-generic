@@ -1,7 +1,7 @@
 namespace LW1.MyCollection
 {
     /// <summary>
-    /// Represents a node in the deque.
+    /// Represents a node in the deque.node 
     /// </summary>
     /// <typeparam name="T">Type of deque</typeparam>
     public class MyDequeNode<T>
