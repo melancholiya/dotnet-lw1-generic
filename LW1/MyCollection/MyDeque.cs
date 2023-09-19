@@ -24,6 +24,14 @@ public class DoubleEndedQueue<T>:IList<T>
         set => _tail = value;
     }
 
+    /// <summary>
+    /// Gets the number of elements contained in the deque
+    /// </summary>
+    public int Count { get; private set; }
+    /// <summary>
+    /// Gets a value indicating whether the deque is read-only
+    /// </summary>
+    public bool IsReadOnly => false;
     public event EventHandler<T> ElementAdded;
     public event EventHandler<T> ElementRemoved;
     public event EventHandler<EventArgs> CollectionCleared;
@@ -31,7 +39,6 @@ public class DoubleEndedQueue<T>:IList<T>
     public event EventHandler<T> AddedToEnd;
     
     public DoubleEndedQueue() { }
-
     public DoubleEndedQueue(IEnumerable<T>collection)
     {
         if (collection is null)
@@ -44,8 +51,10 @@ public class DoubleEndedQueue<T>:IList<T>
             AddLast(item);
         }
     }
-
-
+    
+    /// <summary>
+    /// Removes a specific item from the deque
+    /// </summary>
     public bool Remove(T item)
     {
         var node = Head;
@@ -61,29 +70,49 @@ public class DoubleEndedQueue<T>:IList<T>
                 {
                     RemoveLast();
                 }
+                
                 else
                 {
                     node.Previous.Next = node.Next;
                     node.Next.Previous = node.Previous;
                 }
                 Count--;
+                ElementRemoved?.Invoke(this,item);
                 return true;
             } 
             node = node.Next;
         }
         return false;
-        
     }
-
     
     /// <summary>
-    /// Gets the number of elements contained in the deque
+    /// Removes and returns the item at the front of the deque
     /// </summary>
-    public int Count { get; private set; }
-    /// <summary>
-    /// Gets a value indicating whether the deque is read-only
-    /// </summary>
-    public bool IsReadOnly => false;
+    /// <exception cref="InvalidOperationException">If collection is empty</exception>
+public T RemoveFirst()
+{
+    if (Count == 0)
+    {
+        throw new InvalidOperationException("Deque is empty.");
+    }
+
+    T item = Head.Value;
+    if (Count == 1)
+    {
+        Head = null;
+        Tail = null;
+    }
+    else
+    {
+        Head=Head.Next;
+        Head.Previous = null;
+    }
+
+    Count--;
+    return item;
+    
+}
+    
 /// <summary>
 /// Adds an item to the front of the deque
 /// </summary>
@@ -105,7 +134,6 @@ public class DoubleEndedQueue<T>:IList<T>
         Count++;
         AddedToBeginning?.Invoke(this,item);
     }
-
 
 /// <summary>
 /// Adds an item to the end of the deque
@@ -132,31 +160,6 @@ public class DoubleEndedQueue<T>:IList<T>
 /// <summary>
 ///  Removes and returns the item at the end of the deque
 /// </summary>
-/// <returns></returns>
-public T RemoveFirst()
-{
-    if (Count == 0)
-    {
-        throw new InvalidOperationException("Deque is empty.");
-    }
-
-    T item = Head.Value;
-    if (Count == 1)
-    {
-        Head = null;
-        Tail = null;
-    }
-    else
-    {
-        Head=Head.Next;
-        Head.Previous = null;
-    }
-
-    Count--;
-    return item;
-    
-}
-
 public T RemoveLast()
 {
     if(Count==0)
@@ -190,7 +193,9 @@ public void Add(T item)
     AddItems(item);
     ElementAdded?.Invoke(this,item);
 }
-
+/// <summary>
+/// Clears the contents of the deque
+/// </summary>
 public void Clear()
 {
     var current= Head;
@@ -203,7 +208,9 @@ public void Clear()
     
     CollectionCleared!.Invoke(this,EventArgs.Empty);
 }
-
+/// <summary>
+/// Checks if the deque contains a specific item
+/// </summary>
 public bool Contains(T item)
 {
     MyDequeNode<T>current = Head;
@@ -217,7 +224,14 @@ public bool Contains(T item)
     }
     return false;
 }
-
+/// <summary>
+/// Copies the elements of the deque to an array, starting at a particular array index
+/// </summary>
+/// <param name="array"></param>
+/// <param name="arrayIndex"></param>
+/// <exception cref="ArgumentNullException">If array is empty</exception>
+/// <exception cref="ArgumentOutOfRangeException">Value of an argument is outside the allowable range of values as defined by the invoked method</exception>
+/// <exception cref="ArgumentException">Explains the reason for the exception</exception>
 public void CopyTo(T[] array, int arrayIndex)
 {
     if (array is null)
@@ -300,12 +314,13 @@ private class MyEnumerator : IEnumerator<T>
     {
         return new MyEnumerator(this);
     }
-
     IEnumerator IEnumerable.GetEnumerator()
     {
         return GetEnumerator();
     }
-
+/// <summary>
+/// Gets the index of the first occurrence of a specific item in the deque
+/// </summary>
     public int IndexOf(T item)
     {
         int index = 0;
@@ -323,7 +338,9 @@ private class MyEnumerator : IEnumerator<T>
 
         return -1;
     }
-
+/// <summary>
+/// Inserts an item to the deque at the specified index
+/// </summary>
     public void Insert(int index, T item)
     {
        if(index<0||index>Count)
@@ -354,7 +371,9 @@ private class MyEnumerator : IEnumerator<T>
        }
        Count++;
     }
-
+/// <summary>
+/// Removes the item at the specified index from the deque
+/// </summary>
     public void RemoveAt(int index)
     {
         if (index < 0 || index >= Count)
@@ -383,7 +402,9 @@ private class MyEnumerator : IEnumerator<T>
             Count--;
         }   
     }
-
+/// <summary>
+/// Accesses the item at the specified index
+/// </summary>
     public T this[int index]
     {
         get

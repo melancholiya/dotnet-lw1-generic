@@ -10,13 +10,25 @@ namespace LW1.MyConsoleApp
         public static void Main(string[] args)
         {
             var deque=new DoubleEndedQueue<int>();
-           //var handler=new DequeEventHandler<int>(deque);
+           
            IDequeEventHandler handler=new DequeEventHandler<int>(deque);
            handler.Subscriber();
            
-            deque.AddFirst(1);
+             deque.AddFirst(1);
              deque.AddFirst(2);
-             deque.AddLast(3);
+             deque.AddFirst(3);
+             deque.AddLast(4);
+             deque.AddLast(5);
+             deque.AddLast(6);
+             
+            Console.WriteLine(deque.Contains(5));
+            Console.WriteLine(deque.Contains(7));
+            
+            Console.WriteLine(deque.IndexOf(5));
+            Console.WriteLine(deque.IndexOf(7));
+
+            deque.Remove(1);
+             
              deque.Clear();
              
              
@@ -27,7 +39,6 @@ namespace LW1.MyConsoleApp
             {
                 System.Console.WriteLine(items);
             }
-            //Console.WriteLine(deque.Contains(5));
             
 
         }
