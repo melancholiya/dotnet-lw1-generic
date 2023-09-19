@@ -5,3 +5,10 @@ D:\WebDev\LW1\dotnet-lw1-generic\LW1\obj\Debug\LW1.csproj.SuggestedBindingRedire
 D:\WebDev\LW1\dotnet-lw1-generic\LW1\obj\Debug\LW1.csproj.CoreCompileInputs.cache
 D:\WebDev\LW1\dotnet-lw1-generic\LW1\obj\Debug\LW1.exe
 D:\WebDev\LW1\dotnet-lw1-generic\LW1\obj\Debug\LW1.pdb
+D:\WebDev\LW1\dotnet-lw1-generic\dotnet-lw1-generic\LW1\bin\Debug\LW1.exe
+D:\WebDev\LW1\dotnet-lw1-generic\dotnet-lw1-generic\LW1\bin\Debug\LW1.pdb
+D:\WebDev\LW1\dotnet-lw1-generic\dotnet-lw1-generic\LW1\obj\Debug\LW1.csproj.AssemblyReference.cache
+D:\WebDev\LW1\dotnet-lw1-generic\dotnet-lw1-generic\LW1\obj\Debug\LW1.csproj.SuggestedBindingRedirects.cache
+D:\WebDev\LW1\dotnet-lw1-generic\dotnet-lw1-generic\LW1\obj\Debug\LW1.csproj.CoreCompileInputs.cache
+D:\WebDev\LW1\dotnet-lw1-generic\dotnet-lw1-generic\LW1\obj\Debug\LW1.exe
+D:\WebDev\LW1\dotnet-lw1-generic\dotnet-lw1-generic\LW1\obj\Debug\LW1.pdb
