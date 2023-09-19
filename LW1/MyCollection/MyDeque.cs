@@ -12,8 +12,14 @@ public class DoubleEndedQueue<T>: ICollection<T>, IList<T>
     private MyDequeNode<T> _head;
 
     private MyDequeNode<T> _tail;
-
-
+    
+   private readonly DequeEventHandler<T> _dequeEventHandler;
+    public event EventHandler<T> ElementAdded;
+    public event EventHandler<T> ElementRemoved;
+    public event EventHandler<EventArgs> CollectionCleared;
+    public event EventHandler<T> AddedToBeginning;
+    public event EventHandler<T> AddedToEnd;
+    
     public DoubleEndedQueue() { }
 
     public DoubleEndedQueue(IEnumerable<T>collection)
@@ -29,9 +35,6 @@ public class DoubleEndedQueue<T>: ICollection<T>, IList<T>
         }
     }
 
-    public event EventHandler CollectionCleared;
-    public event EventHandler CollectionAdded;
-    public event EventHandler CollectionRemoved;
 
     public bool Remove(T item)
     {
@@ -59,8 +62,10 @@ public class DoubleEndedQueue<T>: ICollection<T>, IList<T>
             node = node.Next;
         }
         return false;
+        ElementRemoved?.Invoke(this,item);
     }
 
+    
     /// <summary>
     /// Gets the number of elements contained in the deque
     /// </summary>
@@ -88,6 +93,7 @@ public class DoubleEndedQueue<T>: ICollection<T>, IList<T>
         }
 
         Count++;
+        AddedToBeginning?.Invoke(this,item);
     }
 
 
@@ -111,6 +117,7 @@ public class DoubleEndedQueue<T>: ICollection<T>, IList<T>
         }
 
         Count++;
+        AddedToEnd?.Invoke(this,item);
     }
 /// <summary>
 ///  Removes and returns the item at the end of the deque
@@ -137,6 +144,7 @@ public T RemoveFirst()
 
     Count--;
     return item;
+    
 }
 
 public T RemoveLast()
@@ -170,6 +178,7 @@ private void AddItems(T value)
 public void Add(T item)
 {
     AddItems(item);
+    ElementAdded?.Invoke(this,item);
 }
 
 public void Clear()
@@ -182,8 +191,7 @@ public void Clear()
     _head = null;
     Count= 0;
     
-    //CollectionCleared!.Invoke(this,EventArgs.Empty);
-    Console.WriteLine("Collection cleared");
+    CollectionCleared!.Invoke(this,EventArgs.Empty);
 }
 
 public bool Contains(T item)
@@ -399,4 +407,6 @@ private class MyEnumerator : IEnumerator<T>
             node.Value = value;
         }
     }
+    
+    
 }

@@ -41,7 +41,7 @@
         <Reference Include="System.Xml"/>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="MyCollectionLogic\MyCollectionLogic.cs" />
+        <Compile Include="MyCollectionLogic\DequeEventHandler.cs" />
         <Compile Include="MyCollection\MyDeque.cs" />
         <Compile Include="MyCollection\MyDequeNode.cs" />
         <Compile Include="MyConsoleApp\Program.cs" />
