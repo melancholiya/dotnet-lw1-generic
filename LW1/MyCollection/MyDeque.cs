@@ -3,17 +3,27 @@ using System.Collections;
 using System.Collections.Generic;
 using LW1.MyCollectionLogic;
 
-//using System.Linq;
 
 namespace LW1.MyCollection;
 
-public class DoubleEndedQueue<T>: ICollection<T>, IList<T>
+public class DoubleEndedQueue<T>:IList<T>
 {
     private MyDequeNode<T> _head;
 
     private MyDequeNode<T> _tail;
-    
-   private readonly DequeEventHandler<T> _dequeEventHandler;
+
+    public MyDequeNode<T> Head
+    {
+        get => _head;
+        set => _head = value;
+    }
+
+    public MyDequeNode<T>Tail
+    {
+        get => _tail;
+        set => _tail = value;
+    }
+
     public event EventHandler<T> ElementAdded;
     public event EventHandler<T> ElementRemoved;
     public event EventHandler<EventArgs> CollectionCleared;
@@ -38,16 +48,16 @@ public class DoubleEndedQueue<T>: ICollection<T>, IList<T>
 
     public bool Remove(T item)
     {
-        var node = _head;
+        var node = Head;
         while (node!=null)
         {
             if (node.Value.Equals(item))
             {
-                if (node == _head)
+                if (node == Head)
                 {
                     RemoveFirst();
                 }
-                else if (node == _tail)
+                else if (node ==Tail )
                 {
                     RemoveLast();
                 }
@@ -62,7 +72,7 @@ public class DoubleEndedQueue<T>: ICollection<T>, IList<T>
             node = node.Next;
         }
         return false;
-        ElementRemoved?.Invoke(this,item);
+        
     }
 
     
@@ -82,14 +92,14 @@ public class DoubleEndedQueue<T>: ICollection<T>, IList<T>
         MyDequeNode<T> newNode = new MyDequeNode<T>(item);
         if (Count == 0)
         {
-            _head = newNode;
-            _tail = newNode;
+            Head = newNode;
+            Tail = newNode;
         }
         else
         {
-            newNode.Next = _head;
-            _head.Previous = newNode;
-            _head = newNode;
+            newNode.Next = Head;
+            Head.Previous = newNode;
+            Head = newNode;
         }
 
         Count++;
@@ -106,14 +116,14 @@ public class DoubleEndedQueue<T>: ICollection<T>, IList<T>
         
         if (Count == 0)
         {
-            _head = newNode;
-            _tail = newNode;
+            Head = newNode;
+            Tail = newNode;
         }
         else
         {
-            _tail.Next = newNode;
-            newNode.Previous = _tail;
-            _tail = newNode;
+            Tail.Next = newNode;
+            newNode.Previous = Tail;
+            Tail = newNode;
         }
 
         Count++;
@@ -130,16 +140,16 @@ public T RemoveFirst()
         throw new InvalidOperationException("Deque is empty.");
     }
 
-    T item = _head.Value;
+    T item = Head.Value;
     if (Count == 1)
     {
-        _head = null;
-        _tail = null;
+        Head = null;
+        Tail = null;
     }
     else
     {
-        _head=_head.Next;
-        _head.Previous = null;
+        Head=Head.Next;
+        Head.Previous = null;
     }
 
     Count--;
@@ -151,16 +161,16 @@ public T RemoveLast()
 {
     if(Count==0)
         throw new InvalidOperationException("Deque is empty.");
-    var item = _tail.Value;
+    var item = Tail.Value;
     if (Count == 1)
     {
-        _head = null;
-        _tail = null;
+        Head = null;
+        Tail = null;
     }
     else
     {
-        _tail = _tail.Previous;
-        _tail.Next = null;
+        Tail = Tail.Previous;
+        Tail.Next = null;
     }
     Count--;
     return item;
@@ -169,7 +179,7 @@ public T RemoveLast()
 
 private void AddItems(T value)
 {
-    if (_head == null)
+    if (Head == null)
     {
         AddFirst(value);
     } 
@@ -183,12 +193,12 @@ public void Add(T item)
 
 public void Clear()
 {
-    var current= _head;
+    var current= Head;
     while (current!=null)
     {
         current = current.Next;
     }
-    _head = null;
+    Head = null;
     Count= 0;
     
     CollectionCleared!.Invoke(this,EventArgs.Empty);
@@ -196,7 +206,7 @@ public void Clear()
 
 public bool Contains(T item)
 {
-    MyDequeNode<T>current = _head;
+    MyDequeNode<T>current = Head;
     while (current!=null)
     {
         if (current.Value.Equals(item))
@@ -227,7 +237,7 @@ public void CopyTo(T[] array, int arrayIndex)
                                     "end of the destination array.");
     }
 
-    MyDequeNode<T>current = _head;
+    MyDequeNode<T>current = Head;
     while (current!=null)
     {
         array[arrayIndex++] = current.Value;
@@ -247,18 +257,18 @@ private class MyEnumerator : IEnumerator<T>
             {
                 _doubleEndedQueue = doubleEndedQueue;
                 _currentElement = default(T);
-                _node = doubleEndedQueue._head;
+                _node = doubleEndedQueue.Head;
             }
 
             public bool MoveNext()
             {
-                if (_node == null &&_node!=_doubleEndedQueue._tail)
+                if (_node == null &&_node!=_doubleEndedQueue.Tail)
                 {
                     return false;
                 }
                 _currentElement = _node!.Value;
                 _node = _node.Next;
-                if (_node == _doubleEndedQueue._head)
+                if (_node == _doubleEndedQueue.Head)
                 {
                     _node = null;
                 }
@@ -299,7 +309,7 @@ private class MyEnumerator : IEnumerator<T>
     public int IndexOf(T item)
     {
         int index = 0;
-        MyDequeNode<T> current = _head;
+        MyDequeNode<T> current = Head;
         while (current != null)
         {
             if (current.Value.Equals(item))
@@ -321,17 +331,17 @@ private class MyEnumerator : IEnumerator<T>
        var node=new MyDequeNode<T>(item);
        if (index == 0)
        {
-           node.Next=_head;
-           _head=node;
+           node.Next=Head;
+           Head=node;
        }
        else if(index==Count)
        {
-           node.Previous = _tail;
-           _tail=node;
+           node.Previous = Tail;
+           Tail=node;
        }
        else
        {
-           var currentNode = _head;
+           var currentNode = Head;
            for (int i = 0; i < index - 1; i++)
            {
                currentNode = currentNode.Next;
@@ -362,7 +372,7 @@ private class MyEnumerator : IEnumerator<T>
         }
         else
         {
-            var currentNode = _head;
+            var currentNode = Head;
             for (int i = 0; i < index - 1; i++)
             {
                 currentNode = currentNode.Next;
@@ -383,7 +393,7 @@ private class MyEnumerator : IEnumerator<T>
                 throw new ArgumentOutOfRangeException("Index is out of range.");
             }
 
-            var node = _head;
+            var node = Head;
             for (int i = 0; i < index; i++)
             {
                 node = node.Next;
@@ -398,7 +408,7 @@ private class MyEnumerator : IEnumerator<T>
                 throw new ArgumentOutOfRangeException("Index is out of range.");
             }
 
-            var node = _head;
+            var node = Head;
             for (int i = 0; i < index; i++)
             {
                 node = node.Next;

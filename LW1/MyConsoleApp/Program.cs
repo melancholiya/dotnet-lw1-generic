@@ -10,30 +10,10 @@ namespace LW1.MyConsoleApp
         public static void Main(string[] args)
         {
             var deque=new DoubleEndedQueue<int>();
-           var handler=new DequeEventHandler<int>(deque);
-
-           deque.ElementAdded += (sender, eventArgs) =>
-           {
-               Console.WriteLine("Element added: {0}", eventArgs);
-           };
-           deque.CollectionCleared += (sender, eventArgs) =>
-           {
-               Console.WriteLine("Collection cleared");
-           };
-           deque.ElementRemoved += (sender, eventArgs) =>
-           {
-               Console.WriteLine("Element removed: {0}", eventArgs);
-           };
-           deque.AddedToBeginning += (sender, eventArgs) =>
-           {
-               Console.WriteLine("Element added to beginning: {0}", eventArgs);
-           };
-           deque.AddedToEnd += (sender, eventArgs) =>
-           {
-               Console.WriteLine("Element added to end: {0}", eventArgs);
-           };
+           //var handler=new DequeEventHandler<int>(deque);
+           IDequeEventHandler handler=new DequeEventHandler<int>(deque);
+           handler.Subscriber();
            
-             
             deque.AddFirst(1);
              deque.AddFirst(2);
              deque.AddLast(3);
