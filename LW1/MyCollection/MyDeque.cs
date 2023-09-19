@@ -89,7 +89,7 @@ public class DoubleEndedQueue<T>:IList<T>
     /// Removes and returns the item at the front of the deque
     /// </summary>
     /// <exception cref="InvalidOperationException">If collection is empty</exception>
-public T RemoveFirst()
+    public T RemoveFirst()
 {
     if (Count == 0)
     {
@@ -109,9 +109,33 @@ public T RemoveFirst()
     }
 
     Count--;
+    ElementRemoved?.Invoke(this,item);
     return item;
     
 }
+    /// <summary>
+    ///  Removes and returns the item at the end of the deque
+    /// </summary>
+    public T RemoveLast()
+    {
+        if(Count==0)
+            throw new InvalidOperationException("Deque is empty.");
+        var item = Tail.Value;
+        if (Count == 1)
+        {
+            Head = null;
+            Tail = null;
+        }
+        else
+        {
+            Tail = Tail.Previous;
+            Tail.Next = null;
+        }
+        Count--;
+        ElementRemoved?.Invoke(this,item);
+        return item;
+    
+    }
     
 /// <summary>
 /// Adds an item to the front of the deque
@@ -157,28 +181,6 @@ public T RemoveFirst()
         Count++;
         AddedToEnd?.Invoke(this,item);
     }
-/// <summary>
-///  Removes and returns the item at the end of the deque
-/// </summary>
-public T RemoveLast()
-{
-    if(Count==0)
-        throw new InvalidOperationException("Deque is empty.");
-    var item = Tail.Value;
-    if (Count == 1)
-    {
-        Head = null;
-        Tail = null;
-    }
-    else
-    {
-        Tail = Tail.Previous;
-        Tail.Next = null;
-    }
-    Count--;
-    return item;
-    
-}
 
 private void AddItems(T value)
 {
@@ -198,16 +200,18 @@ public void Add(T item)
 /// </summary>
 public void Clear()
 {
-    var current= Head;
-    while (current!=null)
+    while (Head != null)
     {
-        current = current.Next;
+        var nextNode = Head.Next;
+        Head = null;
+        Head = nextNode;
     }
-    Head = null;
-    Count= 0;
     
-    CollectionCleared!.Invoke(this,EventArgs.Empty);
+    Count = 0;
+    
+    CollectionCleared?.Invoke(this, EventArgs.Empty);
 }
+
 /// <summary>
 /// Checks if the deque contains a specific item
 /// </summary>
@@ -341,36 +345,43 @@ private class MyEnumerator : IEnumerator<T>
 /// <summary>
 /// Inserts an item to the deque at the specified index
 /// </summary>
-    public void Insert(int index, T item)
+public void Insert(int index, T item)
+{
+    if (index < 0 || index > Count)
     {
-       if(index<0||index>Count)
-           throw new ArgumentOutOfRangeException(nameof(index), "Index is out of range.");
-       var node=new MyDequeNode<T>(item);
-       if (index == 0)
-       {
-           node.Next=Head;
-           Head=node;
-       }
-       else if(index==Count)
-       {
-           node.Previous = Tail;
-           Tail=node;
-       }
-       else
-       {
-           var currentNode = Head;
-           for (int i = 0; i < index - 1; i++)
-           {
-               currentNode = currentNode.Next;
-           }
-
-           node.Previous = currentNode;
-           node.Next = currentNode.Next;
-           currentNode.Next = node;
-           node.Next.Previous = node;
-       }
-       Count++;
+        throw new ArgumentOutOfRangeException(nameof(index), "Index is out of range.");
     }
+
+    var newNode = new MyDequeNode<T>(item);
+
+    if (index == 0)
+    {
+        newNode.Next = Head;
+        Head = newNode;
+    }
+    else if (index == Count)
+    {
+        newNode.Previous = Tail;
+        Tail.Next = newNode;
+        Tail = newNode;
+    }
+    else
+    {
+        var currentNode = Head;
+        for (int i = 0; i < index - 1; i++)
+        {
+            currentNode = currentNode.Next;
+        }
+
+        newNode.Previous = currentNode;
+        newNode.Next = currentNode.Next;
+        currentNode.Next.Previous = newNode;
+        currentNode.Next = newNode;
+    }
+
+    Count++;
+}
+
 /// <summary>
 /// Removes the item at the specified index from the deque
 /// </summary>
@@ -397,8 +408,9 @@ private class MyEnumerator : IEnumerator<T>
                 currentNode = currentNode.Next;
             }
 
-            currentNode.Next = currentNode.Next.Next;
-            currentNode.Next.Previous = currentNode;
+            currentNode.Previous.Next = currentNode.Next;
+            currentNode.Next.Previous = currentNode.Previous;
+            ElementRemoved?.Invoke(this,currentNode.Value);
             Count--;
         }   
     }

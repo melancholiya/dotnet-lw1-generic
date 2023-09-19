@@ -8,39 +8,46 @@ namespace LW1.MyConsoleApp
     internal class Program
     {
         public static void Main(string[] args)
-        {
+        { 
             var deque=new DoubleEndedQueue<int>();
-           
            IDequeEventHandler handler=new DequeEventHandler<int>(deque);
            handler.Subscriber();
            
-             deque.AddFirst(1);
-             deque.AddFirst(2);
-             deque.AddFirst(3);
-             deque.AddLast(4);
-             deque.AddLast(5);
-             deque.AddLast(6);
-             
-            Console.WriteLine(deque.Contains(5));
-            Console.WriteLine(deque.Contains(7));
-            
-            Console.WriteLine(deque.IndexOf(5));
-            Console.WriteLine(deque.IndexOf(7));
-
-            deque.Remove(1);
-             
-             deque.Clear();
-             
-             
-             
+           IConsoleApp consoleApp=new ConsoleApp();
+           consoleApp.CreateDequeWithElements();
+           consoleApp.RemoveElements();
+           consoleApp.Contains();
+           consoleApp.IndexOf();
+           consoleApp.CopyTo();
+           consoleApp.Insert();
+           consoleApp.RemoveAt();
+           Console.WriteLine("-------------------Clear-------------------");
+           deque.Clear();
+           //consoleApp.Clear();
+           
 
 
-            foreach (var items in deque)
-            {
-                System.Console.WriteLine(items);
-            }
-            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         }
+        
     }
+    
 }

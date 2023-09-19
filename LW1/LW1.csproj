@@ -45,6 +45,8 @@
         <Compile Include="MyCollectionLogic\IDequeEventHandler.cs" />
         <Compile Include="MyCollection\MyDeque.cs" />
         <Compile Include="MyCollection\MyDequeNode.cs" />
+        <Compile Include="MyConsoleApp\ConsoleApp.cs" />
+        <Compile Include="MyConsoleApp\IConsoleApp.cs" />
         <Compile Include="MyConsoleApp\Program.cs" />
         <Compile Include="Properties\AssemblyInfo.cs"/>
     </ItemGroup>
