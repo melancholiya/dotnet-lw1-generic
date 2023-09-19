@@ -1,15 +1,18 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using LW1.MyCollectionLogic;
+
 //using System.Linq;
 
 namespace LW1.MyCollection;
 
-public class DoubleEndedQueue<T>: ICollection<T>
+public class DoubleEndedQueue<T>: ICollection<T>, IList<T>
 {
     private MyDequeNode<T> _head;
 
     private MyDequeNode<T> _tail;
+
 
     public DoubleEndedQueue() { }
 
@@ -32,7 +35,30 @@ public class DoubleEndedQueue<T>: ICollection<T>
 
     public bool Remove(T item)
     {
-        throw new NotImplementedException();
+        var node = _head;
+        while (node!=null)
+        {
+            if (node.Value.Equals(item))
+            {
+                if (node == _head)
+                {
+                    RemoveFirst();
+                }
+                else if (node == _tail)
+                {
+                    RemoveLast();
+                }
+                else
+                {
+                    node.Previous.Next = node.Next;
+                    node.Next.Previous = node.Previous;
+                }
+                Count--;
+                return true;
+            } 
+            node = node.Next;
+        }
+        return false;
     }
 
     /// <summary>
@@ -133,7 +159,6 @@ public T RemoveLast()
     
 }
 
-
 private void AddItems(T value)
 {
     if (_head == null)
@@ -202,7 +227,6 @@ public void CopyTo(T[] array, int arrayIndex)
     }
 }
 
-
 private class MyEnumerator : IEnumerator<T>
         {
             private readonly DoubleEndedQueue<T> _doubleEndedQueue;
@@ -242,7 +266,16 @@ private class MyEnumerator : IEnumerator<T>
             public void Dispose()
             { 
             }
-            
+            /*Implement GetEnumerator using yield
+            // public IEnumerator<T> GetEnumerator()
+            // {
+            //     MyDequeNode<T> current = _head;
+            //     while (current != null)
+            //     {
+            //         yield return current.Value;
+            //         current = current.Next;
+            //     }
+            */
 
     }
     public IEnumerator<T> GetEnumerator()
@@ -253,5 +286,117 @@ private class MyEnumerator : IEnumerator<T>
     IEnumerator IEnumerable.GetEnumerator()
     {
         return GetEnumerator();
+    }
+
+    public int IndexOf(T item)
+    {
+        int index = 0;
+        MyDequeNode<T> current = _head;
+        while (current != null)
+        {
+            if (current.Value.Equals(item))
+            {
+                return index;
+            }
+
+            index++;
+            current = current.Next;
+        }
+
+        return -1;
+    }
+
+    public void Insert(int index, T item)
+    {
+       if(index<0||index>Count)
+           throw new ArgumentOutOfRangeException(nameof(index), "Index is out of range.");
+       var node=new MyDequeNode<T>(item);
+       if (index == 0)
+       {
+           node.Next=_head;
+           _head=node;
+       }
+       else if(index==Count)
+       {
+           node.Previous = _tail;
+           _tail=node;
+       }
+       else
+       {
+           var currentNode = _head;
+           for (int i = 0; i < index - 1; i++)
+           {
+               currentNode = currentNode.Next;
+           }
+
+           node.Previous = currentNode;
+           node.Next = currentNode.Next;
+           currentNode.Next = node;
+           node.Next.Previous = node;
+       }
+       Count++;
+    }
+
+    public void RemoveAt(int index)
+    {
+        if (index < 0 || index >= Count)
+        {
+            throw new ArgumentOutOfRangeException(nameof(index), "Index is out of range.");
+        }
+
+        if (index == 0)
+        {
+            RemoveFirst();
+        }
+        else if (index == Count - 1)
+        {
+            RemoveLast();
+        }
+        else
+        {
+            var currentNode = _head;
+            for (int i = 0; i < index - 1; i++)
+            {
+                currentNode = currentNode.Next;
+            }
+
+            currentNode.Next = currentNode.Next.Next;
+            currentNode.Next.Previous = currentNode;
+            Count--;
+        }   
+    }
+
+    public T this[int index]
+    {
+        get
+        {
+            if (index < 0 || index >= Count)
+            {
+                throw new ArgumentOutOfRangeException("Index is out of range.");
+            }
+
+            var node = _head;
+            for (int i = 0; i < index; i++)
+            {
+                node = node.Next;
+            }
+
+            return node.Value;
+        }
+        set
+        {
+            if (index < 0 || index >= Count)
+            {
+                throw new ArgumentOutOfRangeException("Index is out of range.");
+            }
+
+            var node = _head;
+            for (int i = 0; i < index; i++)
+            {
+                node = node.Next;
+            }
+
+            node.Value = value;
+        }
     }
 }
