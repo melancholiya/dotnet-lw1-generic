@@ -164,6 +164,10 @@ public class DoubleEndedQueue<T>:IList<T>
 /// </summary>
     public void AddLast(T item)
     {
+        if (item == null)
+        {
+            throw new ArgumentNullException(nameof(item), "Елемент не може бути null.");
+        }
         MyDequeNode<T> newNode = new MyDequeNode<T>(item);
         
         if (Count == 0)
@@ -231,8 +235,8 @@ public bool Contains(T item)
 /// <summary>
 /// Copies the elements of the deque to an array, starting at a particular array index
 /// </summary>
-/// <param name="array"></param>
-/// <param name="arrayIndex"></param>
+/// <param name="array">Array size</param>
+/// <param name="arrayIndex">The index value of the array from which to start copying</param>
 /// <exception cref="ArgumentNullException">If array is empty</exception>
 /// <exception cref="ArgumentOutOfRangeException">Value of an argument is outside the allowable range of values as defined by the invoked method</exception>
 /// <exception cref="ArgumentException">Explains the reason for the exception</exception>
@@ -240,7 +244,7 @@ public void CopyTo(T[] array, int arrayIndex)
 {
     if (array is null)
     {
-        throw new ArgumentNullException(nameof(array));
+        throw new ArgumentNullException(nameof(array), "Array is null.");
     }
 
     if (arrayIndex < 0)
@@ -305,7 +309,7 @@ private class MyEnumerator : IEnumerator<T>
             /*Implement GetEnumerator using yield
             // public IEnumerator<T> GetEnumerator()
             // {
-            //     MyDequeNode<T> current = _head;
+            //     MyDequeNode<T> current = Head;
             //     while (current != null)
             //     {
             //         yield return current.Value;
@@ -359,27 +363,28 @@ public void Insert(int index, T item)
         newNode.Next = Head;
         Head = newNode;
     }
-    else if (index == Count)
-    {
-        newNode.Previous = Tail;
-        Tail.Next = newNode;
-        Tail = newNode;
-    }
     else
     {
-        var currentNode = Head;
-        for (int i = 0; i < index - 1; i++)
-        {
-            currentNode = currentNode.Next;
-        }
-
-        newNode.Previous = currentNode;
+        var currentNode = GetNodeAtIndex(index - 1); // get the node of the previous index
         newNode.Next = currentNode.Next;
-        currentNode.Next.Previous = newNode;
+        newNode.Previous = currentNode;
         currentNode.Next = newNode;
-    }
 
+        if (index == Count) // if the insert is at the end, update Tail
+        {
+            Tail = newNode;
+        }
+    }
     Count++;
+}
+private MyDequeNode<T> GetNodeAtIndex(int index)
+{
+    var currentNode = Head;
+    for (int i = 0; i < index; i++)
+    {
+        currentNode = currentNode.Next;
+    }
+    return currentNode;
 }
 
 /// <summary>
@@ -402,15 +407,10 @@ public void Insert(int index, T item)
         }
         else
         {
-            var currentNode = Head;
-            for (int i = 0; i < index - 1; i++)
-            {
-                currentNode = currentNode.Next;
-            }
-
+            var currentNode = GetNodeAtIndex(index); // get the node at the index
             currentNode.Previous.Next = currentNode.Next;
             currentNode.Next.Previous = currentNode.Previous;
-            ElementRemoved?.Invoke(this,currentNode.Value);
+            ElementRemoved?.Invoke(this, currentNode.Value);
             Count--;
         }   
     }
@@ -423,33 +423,21 @@ public void Insert(int index, T item)
         {
             if (index < 0 || index >= Count)
             {
-                throw new ArgumentOutOfRangeException("Index is out of range.");
+                throw new ArgumentOutOfRangeException(nameof(index),"Index is out of range.");
             }
 
-            var node = Head;
-            for (int i = 0; i < index; i++)
-            {
-                node = node.Next;
-            }
-
+            var node = GetNodeAtIndex(index);
             return node.Value;
         }
         set
         {
             if (index < 0 || index >= Count)
             {
-                throw new ArgumentOutOfRangeException("Index is out of range.");
+                throw new ArgumentOutOfRangeException(nameof(index),"Index is out of range.");
             }
 
-            var node = Head;
-            for (int i = 0; i < index; i++)
-            {
-                node = node.Next;
-            }
-
+            var node = GetNodeAtIndex(index);
             node.Value = value;
         }
     }
-    
-    
 }

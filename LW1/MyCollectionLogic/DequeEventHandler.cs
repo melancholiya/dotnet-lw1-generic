@@ -10,7 +10,7 @@ public class DequeEventHandler<T> : IDequeEventHandler
     
     public DequeEventHandler(DoubleEndedQueue<T>deque)
     {
-        this._deque = deque;
+        _deque = deque;
         
     }
     public void Subscriber()

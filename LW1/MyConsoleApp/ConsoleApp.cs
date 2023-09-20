@@ -5,13 +5,8 @@ namespace LW1.MyConsoleApp;
 
 public class ConsoleApp:IConsoleApp
 {
-   private readonly DoubleEndedQueue<int> _deque;
+   private readonly DoubleEndedQueue<int> _deque = new();
 
-   public ConsoleApp()
-   {
-      _deque=new DoubleEndedQueue<int>();
-   }
-   
    private void PrintDeque()
    {
       foreach (var item in _deque)
