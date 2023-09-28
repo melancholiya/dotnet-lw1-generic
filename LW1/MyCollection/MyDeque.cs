@@ -6,7 +6,7 @@ using LW1.MyCollectionLogic;
 
 namespace LW1.MyCollection;
 
-public class DoubleEndedQueue<T>:IList<T>
+public class DoubleEndedQueue<T>:ICollection<T>
 {
     private MyDequeNode<T> _head;
 
@@ -326,118 +326,5 @@ private class MyEnumerator : IEnumerator<T>
     {
         return GetEnumerator();
     }
-/// <summary>
-/// Gets the index of the first occurrence of a specific item in the deque
-/// </summary>
-    public int IndexOf(T item)
-    {
-        int index = 0;
-        MyDequeNode<T> current = Head;
-        while (current != null)
-        {
-            if (current.Value.Equals(item))
-            {
-                return index;
-            }
-
-            index++;
-            current = current.Next;
-        }
-
-        return -1;
-    }
-/// <summary>
-/// Inserts an item to the deque at the specified index
-/// </summary>
-public void Insert(int index, T item)
-{
-    if (index < 0 || index > Count)
-    {
-        throw new ArgumentOutOfRangeException(nameof(index), "Index is out of range.");
-    }
-
-    var newNode = new MyDequeNode<T>(item);
-
-    if (index == 0)
-    {
-        newNode.Next = Head;
-        Head = newNode;
-    }
-    else
-    {
-        var currentNode = GetNodeAtIndex(index - 1); // get the node of the previous index
-        newNode.Next = currentNode.Next;
-        newNode.Previous = currentNode;
-        currentNode.Next = newNode;
-
-        if (index == Count) // if the insert is at the end, update Tail
-        {
-            Tail = newNode;
-        }
-    }
-    Count++;
-}
-private MyDequeNode<T> GetNodeAtIndex(int index)
-{
-    var currentNode = Head;
-    for (int i = 0; i < index; i++)
-    {
-        currentNode = currentNode.Next;
-    }
-    return currentNode;
-}
-
-/// <summary>
-/// Removes the item at the specified index from the deque
-/// </summary>
-    public void RemoveAt(int index)
-    {
-        if (index < 0 || index >= Count)
-        {
-            throw new ArgumentOutOfRangeException(nameof(index), "Index is out of range.");
-        }
-
-        if (index == 0)
-        {
-            RemoveFirst();
-        }
-        else if (index == Count - 1)
-        {
-            RemoveLast();
-        }
-        else
-        {
-            var currentNode = GetNodeAtIndex(index); // get the node at the index
-            currentNode.Previous.Next = currentNode.Next;
-            currentNode.Next.Previous = currentNode.Previous;
-            ElementRemoved?.Invoke(this, currentNode.Value);
-            Count--;
-        }   
-    }
-/// <summary>
-/// Accesses the item at the specified index
-/// </summary>
-    public T this[int index]
-    {
-        get
-        {
-            if (index < 0 || index >= Count)
-            {
-                throw new ArgumentOutOfRangeException(nameof(index),"Index is out of range.");
-            }
-
-            var node = GetNodeAtIndex(index);
-            return node.Value;
-        }
-        set
-        {
-            if (index < 0 || index >= Count)
-            {
-                throw new ArgumentOutOfRangeException(nameof(index),"Index is out of range.");
-            }
-
-            var node = GetNodeAtIndex(index);
-            node.Value = value;
-        }
-    }
+    
 }

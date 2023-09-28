@@ -17,10 +17,7 @@ namespace LW1.MyConsoleApp
            consoleApp.CreateDequeWithElements();
            consoleApp.RemoveElements();
            consoleApp.Contains();
-           consoleApp.IndexOf();
            consoleApp.CopyTo();
-           consoleApp.Insert();
-           consoleApp.RemoveAt();
            Console.WriteLine("-------------------Clear-------------------");
            deque.Clear();
            //consoleApp.Clear();

@@ -18,6 +18,7 @@ public class DequeEventHandler<T> : IDequeEventHandler
         _deque.ElementAdded += (sender, eventArgs) =>
         {
             Console.WriteLine("Element added: {0}", eventArgs);
+            
         };
         _deque.CollectionCleared += (sender, eventArgs) =>
         {

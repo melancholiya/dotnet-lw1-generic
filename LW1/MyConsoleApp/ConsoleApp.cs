@@ -41,34 +41,11 @@ public class ConsoleApp:IConsoleApp
       Console.WriteLine(_deque.Contains(7));
    }
 
-   public void IndexOf()
-   {
-      Console.WriteLine("-------------------IndexOf-------------------");
-      Console.WriteLine(_deque.IndexOf(5));
-      Console.WriteLine(_deque.IndexOf(7));
-   }
-
    public void CopyTo()
    {
       Console.WriteLine("-------------------CopyTo-------------------");
       var array=new int[_deque.Count];
       _deque.CopyTo(array,0);
-      PrintDeque();
-   }
-
-   public void Insert()
-   {
-      Console.WriteLine("-------------------Insert-------------------");
-      _deque.Insert(2, 7);
-      _deque.Insert(4, 8);
-      PrintDeque();
-   }
-
-   public void RemoveAt()
-   {
-      Console.WriteLine("-------------------RemoveAt-------------------");
-      _deque.RemoveAt(2);
-      _deque.RemoveAt(4);
       PrintDeque();
    }
 
